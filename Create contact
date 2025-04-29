@@ -1,0 +1,19 @@
+---
+type: people
+name: 
+dates:
+  - 2222-22-22 | Birthday
+tag: 
+email: 
+tel: 
+created: <%tp.file.creation_date("YYYY-MM-DD-dddd")%>
+modified: <%tp.file.last_modified_date("YYYY-MM-DD-dddd")%>
+---
+Created: [[<%tp.file.creation_date("YYYY-MM-DD-dddd")%>]] <%tp.file.creation_date("HH:mm")%>
+<%*
+const title = await tp.system.prompt("Title");
+await tp.file.rename(`${title}`);
+await tp.file.move(`/People/${title}`);
+%>
+___
+# <%* tR += `${title}` %>
