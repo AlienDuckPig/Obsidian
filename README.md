@@ -5,11 +5,11 @@
 <BR>
 
 #### Birthday tracker 
-Birthday tracker and Create contact work together
-Birthday tracker relies on the YAML in the Create contact file
-Contacts files should be placed in a folder called People
-Birthday tracker will output birthdays coming up in the next month
-Birthday tracker is also included as part of the Daily Note
+Birthday tracker and Create contact work together.  
+Birthday tracker relies on the YAML in the Create contact file.  
+Contacts files should be placed in a folder called People.  
+Birthday tracker will output birthdays coming up in the next month.  
+Birthday tracker is also included as part of the Daily Note.  
 
 <BR>
 
@@ -30,7 +30,7 @@ Requirements:
 3. Calendar Plugin
 4. Dataview plugin
 Clicking on today's date on the calendar creates the daily note using the template.
-Create the template using the script below.
+Create the template using the script provided.
 Place the template in your templates folder.
 Configure Settings > Daily notes as shown in the screenshot at the bottom of the page.
 
