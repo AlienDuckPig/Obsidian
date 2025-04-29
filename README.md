@@ -1,4 +1,8 @@
-> NOTE: Templater plugin is used to run all templates
+> NOTE
+> - Templater plugin is used to run all templates.
+> - Dataview plugin is also required.
+> - Calendar plugin is used for Daily Notes.
+<BR>
 
 #### Birthday tracker 
 Birthday tracker and Create contact work together
