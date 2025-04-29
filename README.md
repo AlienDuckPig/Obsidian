@@ -1,3 +1,5 @@
+> NOTE: Templater plugin is used to run all templates
+
 #### Birthday tracker 
 Birthday tracker and Create contact work together
 Birthday tracker relies on the YAML in the Create contact file
