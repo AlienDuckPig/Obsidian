@@ -1,0 +1,126 @@
+---
+type: Daily note
+Created: "{{date: YYYY-MM-DD-dddd}}"
+On this day: "[[{{date-1Y: YYYY-MM-DD-dddd}}]]"
+---
+# <% moment(tp.file.title,'YYYY-MM-DD').format("dddd, MMMM DD, YYYY") %>
+
+
+
+___
+#### On This Day...
+```dataview
+TABLE
+FROM "Daily notes"
+WHERE dateformat(file.day, "MM-dd") = dateformat(this.file.day, "MM-dd")
+AND ((this.file.day = date(today) AND file.day < this.file.day)
+OR (this.file.day != date(today) AND file.day != this.file.day))
+```
+<BR>
+
+#### Note Activity Today...
+```dataview
+TABLE created, modified, type, tags
+FROM "" AND !"Daily notes" AND !"Templates"
+WHERE contains(dateformat(file.ctime, "YYYY-MM-dd"), dateformat(this.file.day, "YYYY-MM-dd")) OR contains(dateformat(file.mtime, "YYYY-MM-dd"), dateformat(this.file.day, "YYYY-MM-dd"))
+SORT created asc
+```
+<BR>
+
+#### Upcoming birthdays (1 month)
+```dataviewjs
+const pages = dv.pages('"People"')
+  .where(p => p.type == "people" && p.dates && p.dates.length > 0)
+  .filter(p => p.dates.some(date => date.includes("Birthday")));
+
+const today = new Date();
+
+const result = pages.map(p => {
+  const birthdays = p.dates
+    .filter(date => date.includes("Birthday"))
+    .map(date => new Date(date.split("|")[0].trim()));
+
+  const calculateDaysUntilNextBirthday = (birthday) => {
+    const nextBirthday = new Date(today.getFullYear(), birthday.getMonth(), birthday.getDate());
+    if (nextBirthday < today) {
+      nextBirthday.setFullYear(today.getFullYear() + 1);
+    }
+    return Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+  };
+
+  // Get valid birthdays and calculate days until next birthday
+  const validBirthdays = birthdays.map(birthday => {
+    const daysUntil = calculateDaysUntilNextBirthday(birthday);
+    return { birthday, daysUntil };
+  }).filter(b => b.daysUntil >= 0 && b.daysUntil <= 30); // Filter for today and upcoming birthdays
+
+  // Include birthdays that are today
+  const todayBirthdays = birthdays.filter(birthday => {
+    const birthdayDate = new Date(today.getFullYear(), birthday.getMonth(), birthday.getDate());
+    return birthdayDate.toDateString() === today.toDateString(); // Check if the birthday is today
+  });
+
+  // Combine today's birthdays with upcoming birthdays
+  const allValidBirthdays = validBirthdays.concat(todayBirthdays.map(b => ({
+    birthday: b,
+    daysUntil: 0 // Set days until to 0 for today
+  })));
+
+  if (allValidBirthdays.length === 0) return null; // Skip if no upcoming birthdays
+
+  // Find the closest upcoming birthday (including today)
+  const nextBirthday = allValidBirthdays.reduce((closest, b) => {
+    return b.daysUntil < closest.daysUntil ? b : closest;
+  });
+
+  const daysUntilNextBirthday = nextBirthday.daysUntil;
+
+  // Create a new Date object for the next birthday to get the correct weekday
+  const birthdayDate = new Date(today.getFullYear(), nextBirthday.birthday.getMonth(), nextBirthday.birthday.getDate());
+  if (birthdayDate < today) {
+    birthdayDate.setFullYear(today.getFullYear() + 1);
+  }
+
+  // Calculate the age the person will be on their next birthday
+  const originalBirthday = nextBirthday.birthday; // Use the original birthday for age calculation
+  let turns = today.getFullYear() - originalBirthday.getFullYear(); // Calculate base age
+
+  // Check if today is the birthday
+  if (today.getDate() === originalBirthday.getDate() && today.getMonth() === originalBirthday.getMonth()) {
+    // If today is the birthday, no need to add 1 to turns
+    turns = today.getFullYear() - originalBirthday.getFullYear(); // Correctly set to the current age
+  } else if (today >= new Date(today.getFullYear(), originalBirthday.getMonth(), originalBirthday.getDate())) {
+    // Increment the turns if the birthday has occurred this year
+    turns++;
+  }
+
+  // Format the birthday date to "ddd, D MMMM"
+  const formattedBirthday = birthdayDate.toLocaleDateString("en-US", {
+    weekday: 'short', // Short day name (e.g., "Mon")
+    day: 'numeric', // Numeric day (e.g., "1")
+    month: 'long', // Full month name (e.g., "January")
+  });
+
+  // Final output format
+  return {
+    name: "[[" + p.file.name + "]]",
+    birthday: formattedBirthday,
+    daysUntilNextBirthday: daysUntilNextBirthday,
+    turns: turns // Change to "Turns"
+  };
+}).filter(p => p !== null); // Filter out null results
+
+
+// Sort the results by daysUntilNextBirthday
+const sortedResult = result.sort( a => a.daysUntilNextBirthday, 'asc')
+
+const formattedResult = sortedResult.map(p => [
+  p.name,
+  p.birthday,
+  p.daysUntilNextBirthday,
+  p.turns // Change to "Turns"
+]);
+
+dv.table(["Name", "Birthday", "Days Until Next Birthday", "Turns"], formattedResult);
+
+```
