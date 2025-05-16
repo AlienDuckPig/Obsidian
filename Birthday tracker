@@ -1,6 +1,5 @@
 #### Upcoming birthdays (1 month)
 ```dataviewjs
-
 const pages = dv.pages('"People"')
   .where(p => p.type == "people" && Array.isArray(p.dates) && p.dates.length > 0)
   .filter(p => p.dates.some(date => date.includes("Birthday")));
@@ -81,4 +80,5 @@ const formattedResult = sortedResult.map(p => [
 ]);
 
 dv.table(["Name", "Birthday", "Days Until Next Birthday", "Turns"], formattedResult);
+
 ```
