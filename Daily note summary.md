@@ -18,6 +18,3 @@ From "Daily notes"
 Where summary != null
 Sort created desc
 ```
-___
-##### Reference
-[[01 The Central Repository]]
