@@ -5,23 +5,16 @@ Created: "{{date: YYYY-MM-DD-dddd}}"
 On this day: "[[{{date-1Y: YYYY-MM-DD-dddd}}]]"
 
 ---
-<% tp.user.moon_phase(tp, "en", "et", " ", "YYYY-MM-DD-dddd", "N") %>
 [[ <% tp.date.now("YYYY-MM-DD-dddd", -1, tp.file.title, "YYYY-MM-DD-dddd") %>]] <== today ==> [[<% tp.date.now("YYYY-MM-DD-dddd", 1, tp.file.title, "YYYY-MM-DD-dddd") %>]]
 # <% moment(tp.file.title,'YYYY-MM-DD').format("dddd, MMMM DD, YYYY") %>
 
-
+<%*
+const response = await fetch('https://wttr.in/Kagurazaka?format=%l+%T:+%c+%C+%x+%t+%h+%p+%w+%P+%m');
+const weather = await response.text();
+tR += weather;
+%>
 
 ___
-#### On This Day...
-```dataview
-TABLE
-FROM "Daily notes"
-WHERE dateformat(file.day, "MM-dd") = dateformat(this.file.day, "MM-dd")
-AND ((this.file.day = date(today) AND file.day < this.file.day)
-OR (this.file.day != date(today) AND file.day != this.file.day))
-```
-<BR>
-
 #### Note Activity Today...
 ```dataview
 TABLE created, modified, type, tags
